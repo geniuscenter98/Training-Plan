@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>جدول التمارين الاحترافي</title>
+    <title>جدول التمارين الاحترافي - Training Plan</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -231,6 +231,7 @@
             <button class="btn btn-secondary" onclick="showShareModal()">مشاركة الجدول</button>
             <button class="btn btn-secondary" onclick="downloadPdf()">تحميل PDF</button>
             <button class="btn btn-danger" onclick="showResetModal()">مسح الكل</button>
+            <button class="btn btn-secondary" onclick="location.href='report.html'">عرض التقرير</button>
         </div>
     </div>
 
@@ -390,9 +391,9 @@
                 }
                 pdf.save('جدول_التمارين.pdf');
             }).catch(error => {
-                console.error("Error generating PDF:", error);
-                alert("حدث خطأ أثناء إنشاء ملف PDF. يرجى المحاولة مرة أخرى.");
-            });
+                    console.error("Error generating PDF:", error);
+                    alert("حدث خطأ أثناء إنشاء ملف PDF. يرجى المحاولة مرة أخرى.");
+                });
         }
 
         function showShareModal() {
