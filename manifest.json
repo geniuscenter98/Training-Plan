@@ -2,7 +2,7 @@
     "name": "Training Plan",
     "short_name": "TrainingPlan",
     "description": "منصة Training Plan لخطط التدريب الشخصية الأونلاين. The Training Plan platform for personalized online training plans.",
-    "start_url": "/كاليستنكس.html",
+    "start_url": "/index.html",
     "display": "standalone",
     "background_color": "#f4f7f6",
     "theme_color": "#4CAF50",
