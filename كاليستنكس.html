@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جدول التمارين الاحترافي</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+            vertical-align: top;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+        td input[type="number"], td input[type="text"], td textarea {
+            width: calc(100% - 10px);
+            padding: 8px;
+            margin: 4px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        td textarea {
+            resize: vertical;
+            min-height: 40px;
+        }
+        .add-row-btn {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .add-row-btn:hover {
+            background-color: #1976D2;
+        }
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .delete-btn:hover {
+            background-color: #da190b;
+        }
+        .header-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .header-controls h1 {
+            color: #4CAF50;
+            margin: 0;
+            font-size: 2em;
+        }
+        .buttons-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .btn-secondary {
+            background-color: #008CBA;
+        }
+        .btn-secondary:hover {
+            background-color: #007B9E;
+        }
+        .btn-danger {
+            background-color: #f44336;
+        }
+        .btn-danger:hover {
+            background-color: #da190b;
+        }
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+            max-width: 500px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+            animation-name: animatetop;
+            animation-duration: 0.4s
+        }
+        @keyframes animatetop {
+            from {top: -300px; opacity: 0}
+            to {top: 0; opacity: 1}
+        }
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .share-link-container {
+            display: none;
+            margin-top: 20px;
+            background-color: #e9e9e9;
+            padding: 15px;
+            border-radius: 8px;
+            flex-direction: column;
+            align-items: center;
+        }
+        .share-link-container input {
+            width: 80%;
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            text-align: center;
+        }
+        .share-link-container button {
+            padding: 10px 15px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .share-link-container button:hover {
+            background-color: #007B9E;
+        }
+        @media (max-width: 768px) {
+            .header-controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .buttons-group {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            .btn {
+                width: calc(50% - 5px);
+            }
+            .share-link-container input {
+                width: calc(100% - 20px);
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+
+    <link rel="manifest" href="/manifest.json">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registered! Scope:', registration.scope);
+                    })
+                    .catch(err => {
+                        console.log('Service Worker registration failed:', err);
+                    });
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="header-controls">
+        <h1>جدول التمارين الاحترافي</h1>
+        <div class="buttons-group">
+            <button class="btn" onclick="addRow()">إضافة تمرين</button>
+            <button class="btn btn-secondary" onclick="saveTable()">حفظ الجدول</button>
+            <button class="btn btn-secondary" onclick="loadTable()">تحميل الجدول</button>
+            <button class="btn btn-secondary" onclick="showShareModal()">مشاركة الجدول</button>
+            <button class="btn btn-secondary" onclick="downloadPdf()">تحميل PDF</button>
+            <button class="btn btn-danger" onclick="showResetModal()">مسح الكل</button>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>اليوم</th>
+                <th>التمرين</th>
+                <th>المجموعة (Sets)</th>
+                <th>التكرارات (Reps)</th>
+                <th>الوزن / المدة</th>
+                <th>ملاحظات</th>
+                <th>صورة/فيديو</th>
+                <th>إجراء</th>
+            </tr>
+        </thead>
+        <tbody id="exerciseTableBody">
+            </tbody>
+    </table>
+
+    <div id="resetModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeResetModal()">&times;</span>
+            <h2>تأكيد مسح الجدول</h2>
+            <p>هل أنت متأكد أنك تريد مسح جميع البيانات؟ هذا الإجراء لا يمكن التراجع عنه.</p>
+            <button class="btn btn-danger" onclick="resetTable()">تأكيد المسح</button>
+            <button class="btn btn-secondary" onclick="closeResetModal()">إلغاء</button>
+        </div>
+    </div>
+
+    <div id="shareModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeShareModal()">&times;</span>
+            <h2>مشاركة الجدول</h2>
+            <p>يمكنك مشاركة هذا الرابط مع متدربيك لتحميل الجدول مباشرة:</p>
+            <div class="share-link-container" id="editableShareLinkContainer">
+                <input type="text" id="editableShareLink" readonly>
+                <button onclick="copyShareLink('editableShareLink')">نسخ الرابط</button>
+            </div>
+            <p>ملاحظة: تأكد من حفظ الجدول أولاً لتضمين أحدث التغييرات في الرابط.</p>
+        </div>
+    </div>
+
+    <script>
+        window.jsPDF = window.jspdf.jsPDF; // Correct way to access jsPDF
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            loadTable();
+            loadDataFromURL(); // Load data from URL on page load
+        });
+
+        function addRow(data = {}) {
+            const tableBody = document.getElementById('exerciseTableBody');
+            const row = tableBody.insertRow();
+
+            row.innerHTML = `
+                <td><input type="text" value="${data.day || ''}" placeholder="اليوم"></td>
+                <td><input type="text" value="${data.exercise || ''}" placeholder="التمرين"></td>
+                <td><input type="number" value="${data.sets || ''}" placeholder="المجموعة"></td>
+                <td><input type="number" value="${data.reps || ''}" placeholder="التكرارات"></td>
+                <td><input type="text" value="${data.weightOrDuration || ''}" placeholder="الوزن / المدة"></td>
+                <td><textarea placeholder="ملاحظات">${data.notes || ''}</textarea></td>
+                <td><input type="text" value="${data.media || ''}" placeholder="رابط صورة/فيديو"></td>
+                <td><button class="delete-btn" onclick="deleteRow(this)">حذف</button></td>
+            `;
+        }
+
+        function deleteRow(button) {
+            const row = button.closest('tr');
+            row.remove();
+        }
+
+        function collectTableData() {
+            const tableBody = document.getElementById('exerciseTableBody');
+            const rows = tableBody.getElementsByTagName('tr');
+            const data = [];
+
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                const rowData = {
+                    day: cells[0].querySelector('input').value,
+                    exercise: cells[1].querySelector('input').value,
+                    sets: cells[2].querySelector('input').value,
+                    reps: cells[3].querySelector('input').value,
+                    weightOrDuration: cells[4].querySelector('input').value,
+                    notes: cells[5].querySelector('textarea').value,
+                    media: cells[6].querySelector('input').value
+                };
+                data.push(rowData);
+            }
+            return data;
+        }
+
+        function saveTable() {
+            const data = collectTableData();
+            localStorage.setItem('exerciseTableData', JSON.stringify(data));
+            alert('تم حفظ الجدول بنجاح!');
+        }
+
+        function loadTable() {
+            const savedData = localStorage.getItem('exerciseTableData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                populateTable(data);
+                // alert('تم تحميل الجدول المحفوظ.');
+            } else {
+                // If no saved data, add a few empty rows for convenience
+                for (let i = 0; i < 3; i++) {
+                    addRow();
+                }
+            }
+        }
+
+        function populateTable(data) {
+            const tableBody = document.getElementById('exerciseTableBody');
+            tableBody.innerHTML = ''; // Clear existing rows
+            data.forEach(item => addRow(item));
+        }
+
+        function showResetModal() {
+            document.getElementById('resetModal').style.display = 'block';
+        }
+
+        function closeResetModal() {
+            document.getElementById('resetModal').style.display = 'none';
+        }
+
+        function resetTable() {
+            localStorage.removeItem('exerciseTableData');
+            document.getElementById('exerciseTableBody').innerHTML = '';
+            for (let i = 0; i < 3; i++) {
+                addRow();
+            }
+            closeResetModal();
+            alert('تم مسح الجدول بنجاح!');
+        }
+
+        function downloadPdf() {
+            const element = document.querySelector('table'); // Select the table
+            html2canvas(element, { scale: 2 }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgWidth = 210; // A4 width in mm
+                const pageHeight = 297; // A4 height in mm
+                const imgHeight = canvas.height * imgWidth / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 0;
+
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+                pdf.save('جدول_التمارين.pdf');
+            }).catch(error => {
+                console.error("Error generating PDF:", error);
+                alert("حدث خطأ أثناء إنشاء ملف PDF. يرجى المحاولة مرة أخرى.");
+            });
+        }
+
+        function showShareModal() {
+            const data = collectTableData();
+            const jsonString = JSON.stringify(data);
+            const base64Encoded = btoa(encodeURIComponent(jsonString)); // Base64 encode after URI encoding
+            const shareUrl = window.location.origin + window.location.pathname + '?data=' + base64Encoded;
+
+            const shareLinkInput = document.getElementById('editableShareLink');
+            shareLinkInput.value = shareUrl;
+            document.getElementById('editableShareLinkContainer').style.display = 'flex';
+            document.getElementById('shareModal').style.display = 'block';
+        }
+
+        function closeShareModal() {
+            document.getElementById('shareModal').style.display = 'none';
+        }
+
+        function copyShareLink(elementId) {
+            const copyText = document.getElementById(elementId);
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // For mobile devices
+            document.execCommand('copy');
+            alert("تم نسخ الرابط!");
+        }
+
+        // Load data from URL on page load
+        function loadDataFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const encodedData = urlParams.get('data');
+            if (encodedData) {
+                try {
+                    const decodedData = decodeURIComponent(atob(encodedData)); // Decode URI then Base64 decode
+                    const data = JSON.parse(decodedData);
+                    populateTable(data);
+                    alert('تم تحميل البيانات من الرابط بنجاح!');
+                    // Optionally, clear the URL parameter after loading to keep it clean
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                } catch (e) {
+                    console.error("خطأ في تحليل البيانات من الرابط:", e);
+                    alert("عذرًا، حدث خطأ أثناء تحميل البيانات من الرابط.");
+                }
+            }
+        }
+    </script>
+</body>
+</html>
