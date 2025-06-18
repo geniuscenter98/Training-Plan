@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>جدول التمارين الاحترافي - Training Plan</title>
+    <title>تطبيق جداول وتمارين الكاليستنكس</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -11,31 +11,67 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f7f6;
             color: #333;
-            margin: 20px;
+            margin: 0; /* Remove default body margin */
+            padding: 20px;
         }
-        table {
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        .navigation-buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .navigation-buttons .nav-btn {
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+        }
+        .navigation-buttons .nav-btn:hover {
+            background-color: #007B9E;
+        }
+        .navigation-buttons .nav-btn.active {
+            background-color: #4CAF50;
+        }
+
+        /* Styles for Training Plan Section */
+        #trainingPlanSection table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             background-color: #fff;
         }
-        th, td {
+        #trainingPlanSection th, #trainingPlanSection td {
             border: 1px solid #ddd;
             padding: 12px;
             text-align: center;
             vertical-align: top;
         }
-        th {
+        #trainingPlanSection th {
             background-color: #4CAF50;
             color: white;
             font-weight: bold;
             text-transform: uppercase;
         }
-        tr:nth-child(even) {
+        #trainingPlanSection tr:nth-child(even) {
             background-color: #f8f8f8;
         }
-        td input[type="number"], td input[type="text"], td textarea {
+        #trainingPlanSection td input[type="number"], 
+        #trainingPlanSection td input[type="text"], 
+        #trainingPlanSection td textarea {
             width: calc(100% - 10px);
             padding: 8px;
             margin: 4px 0;
@@ -44,11 +80,11 @@
             box-sizing: border-box;
             font-size: 14px;
         }
-        td textarea {
+        #trainingPlanSection td textarea {
             resize: vertical;
             min-height: 40px;
         }
-        .add-row-btn {
+        #trainingPlanSection .add-row-btn {
             background-color: #2196F3;
             color: white;
             border: none;
@@ -58,10 +94,10 @@
             font-size: 14px;
             margin-top: 10px;
         }
-        .add-row-btn:hover {
+        #trainingPlanSection .add-row-btn:hover {
             background-color: #1976D2;
         }
-        .delete-btn {
+        #trainingPlanSection .delete-btn {
             background-color: #f44336;
             color: white;
             border: none;
@@ -71,10 +107,10 @@
             font-size: 12px;
             margin-top: 5px;
         }
-        .delete-btn:hover {
+        #trainingPlanSection .delete-btn:hover {
             background-color: #da190b;
         }
-        .header-controls {
+        #trainingPlanSection .header-controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -82,17 +118,17 @@
             flex-wrap: wrap;
             gap: 10px;
         }
-        .header-controls h1 {
+        #trainingPlanSection .header-controls h1 {
             color: #4CAF50;
             margin: 0;
             font-size: 2em;
         }
-        .buttons-group {
+        #trainingPlanSection .buttons-group {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
         }
-        .btn {
+        #trainingPlanSection .btn {
             background-color: #4CAF50;
             color: white;
             border: none;
@@ -102,21 +138,23 @@
             font-size: 16px;
             transition: background-color 0.3s ease;
         }
-        .btn:hover {
+        #trainingPlanSection .btn:hover {
             background-color: #45a049;
         }
-        .btn-secondary {
+        #trainingPlanSection .btn-secondary {
             background-color: #008CBA;
         }
-        .btn-secondary:hover {
+        #trainingPlanSection .btn-secondary:hover {
             background-color: #007B9E;
         }
-        .btn-danger {
+        #trainingPlanSection .btn-danger {
             background-color: #f44336;
         }
-        .btn-danger:hover {
+        #trainingPlanSection .btn-danger:hover {
             background-color: #da190b;
         }
+
+        /* Modal Styles */
         .modal {
             display: none; /* Hidden by default */
             position: fixed; /* Stay in place */
@@ -187,19 +225,51 @@
         .share-link-container button:hover {
             background-color: #007B9E;
         }
+
+        /* Styles for Report Section */
+        #reportSection h1 {
+            color: #4CAF50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        #reportSection table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        #reportSection th, #reportSection td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        #reportSection th {
+            background-color: #008CBA;
+            color: white;
+            font-weight: bold;
+        }
+        #reportSection tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #777;
+            font-size: 1.2em;
+        }
+
         @media (max-width: 768px) {
-            .header-controls {
+            #trainingPlanSection .header-controls {
                 flex-direction: column;
                 align-items: flex-start;
             }
-            .buttons-group {
+            #trainingPlanSection .buttons-group {
                 width: 100%;
                 justify-content: flex-start;
             }
-            .btn {
+            #trainingPlanSection .btn {
                 width: calc(50% - 5px);
             }
-            .share-link-container input {
+            #trainingPlanSection .share-link-container input {
                 width: calc(100% - 20px);
                 margin-bottom: 10px;
             }
@@ -222,56 +292,71 @@
     </script>
 </head>
 <body>
-    <div class="header-controls">
-        <h1>جدول التمارين الاحترافي</h1>
-        <div class="buttons-group">
-            <button class="btn" onclick="addRow()">إضافة تمرين</button>
-            <button class="btn btn-secondary" onclick="saveTable()">حفظ الجدول</button>
-            <button class="btn btn-secondary" onclick="loadTable()">تحميل الجدول</button>
-            <button class="btn btn-secondary" onclick="showShareModal()">مشاركة الجدول</button>
-            <button class="btn btn-secondary" onclick="downloadPdf()">تحميل PDF</button>
-            <button class="btn btn-danger" onclick="showResetModal()">مسح الكل</button>
-            <button class="btn btn-secondary" onclick="location.href='report.html'">عرض التقرير</button>
+    <div class="container">
+        <div class="navigation-buttons">
+            <button class="nav-btn active" id="showTrainingPlanBtn" onclick="showSection('trainingPlanSection', 'showTrainingPlanBtn')">جدول التمارين</button>
+            <button class="nav-btn" id="showReportBtn" onclick="showSection('reportSection', 'showReportBtn')">تقرير التمرين</button>
         </div>
-    </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>اليوم</th>
-                <th>التمرين</th>
-                <th>المجموعة (Sets)</th>
-                <th>التكرارات (Reps)</th>
-                <th>الوزن / المدة</th>
-                <th>ملاحظات</th>
-                <th>صورة/فيديو</th>
-                <th>إجراء</th>
-            </tr>
-        </thead>
-        <tbody id="exerciseTableBody">
-            </tbody>
-    </table>
-
-    <div id="resetModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" onclick="closeResetModal()">&times;</span>
-            <h2>تأكيد مسح الجدول</h2>
-            <p>هل أنت متأكد أنك تريد مسح جميع البيانات؟ هذا الإجراء لا يمكن التراجع عنه.</p>
-            <button class="btn btn-danger" onclick="resetTable()">تأكيد المسح</button>
-            <button class="btn btn-secondary" onclick="closeResetModal()">إلغاء</button>
-        </div>
-    </div>
-
-    <div id="shareModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" onclick="closeShareModal()">&times;</span>
-            <h2>مشاركة الجدول</h2>
-            <p>يمكنك مشاركة هذا الرابط مع متدربيك لتحميل الجدول مباشرة:</p>
-            <div class="share-link-container" id="editableShareLinkContainer">
-                <input type="text" id="editableShareLink" readonly>
-                <button onclick="copyShareLink('editableShareLink')">نسخ الرابط</button>
+        <div id="trainingPlanSection">
+            <div class="header-controls">
+                <h1>جدول التمارين الاحترافي</h1>
+                <div class="buttons-group">
+                    <button class="btn" onclick="addRow()">إضافة تمرين</button>
+                    <button class="btn btn-secondary" onclick="saveTable()">حفظ الجدول</button>
+                    <button class="btn btn-secondary" onclick="loadTable()">تحميل الجدول</button>
+                    <button class="btn btn-secondary" onclick="showShareModal()">مشاركة الجدول</button>
+                    <button class="btn btn-secondary" onclick="downloadPdf()">تحميل PDF</button>
+                    <button class="btn btn-danger" onclick="showResetModal()">مسح الكل</button>
+                </div>
             </div>
-            <p>ملاحظة: تأكد من حفظ الجدول أولاً لتضمين أحدث التغييرات في الرابط.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>اليوم</th>
+                        <th>التمرين</th>
+                        <th>المجموعة (Sets)</th>
+                        <th>التكرارات (Reps)</th>
+                        <th>الوزن / المدة</th>
+                        <th>ملاحظات</th>
+                        <th>صورة/فيديو</th>
+                        <th>إجراء</th>
+                    </tr>
+                </thead>
+                <tbody id="exerciseTableBody">
+                    </tbody>
+            </table>
+
+            <div id="resetModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-button" onclick="closeResetModal()">&times;</span>
+                    <h2>تأكيد مسح الجدول</h2>
+                    <p>هل أنت متأكد أنك تريد مسح جميع البيانات؟ هذا الإجراء لا يمكن التراجع عنه.</p>
+                    <button class="btn btn-danger" onclick="resetTable()">تأكيد المسح</button>
+                    <button class="btn btn-secondary" onclick="closeResetModal()">إلغاء</button>
+                </div>
+            </div>
+
+            <div id="shareModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-button" onclick="closeShareModal()">&times;</span>
+                    <h2>مشاركة الجدول</h2>
+                    <p>يمكنك مشاركة هذا الرابط مع متدربيك لتحميل الجدول مباشرة:</p>
+                    <div class="share-link-container" id="editableShareLinkContainer">
+                        <input type="text" id="editableShareLink" readonly>
+                        <button onclick="copyShareLink('editableShareLink')">نسخ الرابط</button>
+                    </div>
+                    <p>ملاحظة: تأكد من حفظ الجدول أولاً لتضمين أحدث التغييرات في الرابط.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="reportSection" style="display: none;">
+            <h1>تقرير التمارين</h1>
+            <p style="text-align: center; margin-bottom: 20px; color: #555;">ملخص التمارين المحفوظة.</p>
+            <div id="reportContent">
+                </div>
         </div>
     </div>
 
@@ -279,10 +364,41 @@
         window.jsPDF = window.jspdf.jsPDF; // Correct way to access jsPDF
 
         document.addEventListener('DOMContentLoaded', (event) => {
-            loadTable();
-            loadDataFromURL(); // Load data from URL on page load
+            // Check if there's a specific section to show from URL or default to training plan
+            const urlParams = new URLSearchParams(window.location.search);
+            const sectionToShow = urlParams.get('section');
+            if (sectionToShow === 'report') {
+                showSection('reportSection', 'showReportBtn');
+            } else {
+                showSection('trainingPlanSection', 'showTrainingPlanBtn');
+            }
+
+            loadTable(); // Load data for training plan
+            loadDataFromURL(); // Load data if shared via URL
+
+            // Initial load for report to display if navigated directly
+            if (sectionToShow === 'report') {
+                loadReport();
+            }
         });
 
+        function showSection(sectionId, buttonId) {
+            document.getElementById('trainingPlanSection').style.display = 'none';
+            document.getElementById('reportSection').style.display = 'none';
+
+            document.getElementById('showTrainingPlanBtn').classList.remove('active');
+            document.getElementById('showReportBtn').classList.remove('active');
+
+            document.getElementById(sectionId).style.display = 'block';
+            document.getElementById(buttonId).classList.add('active');
+
+            // If navigating to report section, load report data
+            if (sectionId === 'reportSection') {
+                loadReport();
+            }
+        }
+
+        // --- Training Plan Functions (from previous index.html) ---
         function addRow(data = {}) {
             const tableBody = document.getElementById('exerciseTableBody');
             const row = tableBody.insertRow();
@@ -336,9 +452,7 @@
             if (savedData) {
                 const data = JSON.parse(savedData);
                 populateTable(data);
-                // alert('تم تحميل الجدول المحفوظ.');
             } else {
-                // If no saved data, add a few empty rows for convenience
                 for (let i = 0; i < 3; i++) {
                     addRow();
                 }
@@ -370,7 +484,7 @@
         }
 
         function downloadPdf() {
-            const element = document.querySelector('table'); // Select the table
+            const element = document.querySelector('#trainingPlanSection table'); // Select the table within its section
             html2canvas(element, { scale: 2 }).then(canvas => {
                 const imgData = canvas.toDataURL('image/png');
                 const pdf = new jsPDF('p', 'mm', 'a4');
@@ -391,9 +505,9 @@
                 }
                 pdf.save('جدول_التمارين.pdf');
             }).catch(error => {
-                    console.error("Error generating PDF:", error);
-                    alert("حدث خطأ أثناء إنشاء ملف PDF. يرجى المحاولة مرة أخرى.");
-                });
+                console.error("Error generating PDF:", error);
+                alert("حدث خطأ أثناء إنشاء ملف PDF. يرجى المحاولة مرة أخرى.");
+            });
         }
 
         function showShareModal() {
@@ -436,6 +550,56 @@
                     console.error("خطأ في تحليل البيانات من الرابط:", e);
                     alert("عذرًا، حدث خطأ أثناء تحميل البيانات من الرابط.");
                 }
+            }
+        }
+
+        // --- Report Functions (from previous report.html) ---
+        function loadReport() {
+            const reportContentDiv = document.getElementById('reportContent');
+            const savedData = localStorage.getItem('exerciseTableData'); // قراءة البيانات من localStorage
+
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                if (data.length === 0) {
+                    reportContentDiv.innerHTML = '<div class="empty-state">لا توجد تمارين محفوظة لعرضها في التقرير.</div>';
+                    return;
+                }
+
+                let tableHtml = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>اليوم</th>
+                                <th>التمرين</th>
+                                <th>المجموعة (Sets)</th>
+                                <th>التكرارات (Reps)</th>
+                                <th>الوزن / المدة</th>
+                                <th>ملاحظات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                data.forEach(item => {
+                    tableHtml += `
+                        <tr>
+                            <td>${item.day || '-'}</td>
+                            <td>${item.exercise || '-'}</td>
+                            <td>${item.sets || '-'}</td>
+                            <td>${item.reps || '-'}</td>
+                            <td>${item.weightOrDuration || '-'}</td>
+                            <td>${item.notes || '-'}</td>
+                        </tr>
+                    `;
+                });
+
+                tableHtml += `
+                        </tbody>
+                    </table>
+                `;
+                reportContentDiv.innerHTML = tableHtml;
+            } else {
+                reportContentDiv.innerHTML = '<div class="empty-state">لا توجد بيانات محفوظة لعرضها في التقرير. يرجى حفظ جدول التمارين أولاً.</div>';
             }
         }
     </script>
